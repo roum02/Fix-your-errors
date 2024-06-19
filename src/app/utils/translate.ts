@@ -33,27 +33,33 @@ const combineKoreanCharacter = (characterArray: string[]) => {
 export const handleKoreanWord = (characterArray: string[]) => {
     let hangulString = '';
     let buffer: string[] = [];
-// 자음 하나 + 모음 하나 = 한 음절
-    characterArray.forEach(
-        char => {
-            buffer.push(char);
-            // 종성 여부 파악
-            if (buffer.length === 3) {
-                hangulString += combineKoreanCharacter(buffer);
-                buffer = [];
-            } else if (
-                buffer.length === 2 &&
-                !CHOSEONG.has(buffer[1]) &&
-                buffer[1] !== undefined &&
-                (CHOSEONG.has(char) || !JUNGSEONG.has(char))
-            ) {
-                buffer.push('');
-                hangulString += combineKoreanCharacter(buffer);
-                buffer = [char];
-            }
 
-            // 이중모음 케이스
-        })
+    const isJungseong = (char: string) => JUNGSEONG.has(char);
+    const isChoseong = (char: string) => CHOSEONG.has(char);
+    const isJongseong = (char: string) => JONGSEONG.has(char);
+
+
+    characterArray.forEach((char, index)=> {
+        buffer.push(char);
+
+        if (buffer.length === 3 && isChoseong(buffer[0]) && isJungseong(buffer[1])) {
+            hangulString += combineKoreanCharacter(buffer);
+            buffer = [];
+        }
+        else if (buffer.length === 2 && isChoseong(buffer[0]) && isJungseong(buffer[1])) {
+            buffer.push('');
+            hangulString += combineKoreanCharacter(buffer);
+            buffer = [];
+        }
+        else if (buffer.length === 3 && isJungseong(buffer[0]) && isJungseong(buffer[1]) && isChoseong(buffer[2])) {
+            hangulString += combineKoreanCharacter([buffer[0], buffer[1], '']);
+            buffer = [buffer[2]];
+        }
+        else if (buffer.length === 4 && isJungseong(buffer[0]) && isJungseong(buffer[1]) && isChoseong(buffer[2]) && isJongseong(buffer[3])) {
+            hangulString += combineKoreanCharacter([buffer[0], buffer[1], '']);
+            buffer = [buffer[2], buffer[3]];
+        }
+    });
 
     if (buffer.length > 0) {
         while (buffer.length < 3) {
