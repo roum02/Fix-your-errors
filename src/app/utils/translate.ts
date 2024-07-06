@@ -68,6 +68,6 @@ export const handleKoreanWord = (characterArray: string[]) => {
         hangulString += combineKoreanCharacter(buffer);
     }
 
-    console.log("final", hangulString)
+    // console.log("final", hangulString)
     return hangulString;
 }
