@@ -2,12 +2,13 @@ import { CHOSEONG, JONGSEONG, JUNGSEONG, KOREAN_DICTIONARY} from '../data/dictio
 
 /** get a korean character matched an english character*/
 export const handleEnglishCharacterMatch = (englishText: string) => {
-    let koreanTextArray = [];
-    for(const text of englishText){
-        if(KOREAN_DICTIONARY.has(text)){
-            koreanTextArray.push(KOREAN_DICTIONARY.get(text));
+    let koreanTextArray: string[] = [];
+    for(const char of englishText){
+        const matchedKoreanChar = KOREAN_DICTIONARY.get(char);
+        if(matchedKoreanChar){
+            koreanTextArray.push(matchedKoreanChar);
         } else {
-            koreanTextArray.push(text)
+            koreanTextArray.push(char)
         }
     }
 
@@ -42,22 +43,9 @@ export const handleKoreanWord = (characterArray: string[]) => {
     characterArray.forEach((char, index)=> {
         buffer.push(char);
 
-        if (buffer.length === 3 && isChoseong(buffer[0]) && isJungseong(buffer[1])) {
+        if (buffer.length === 3 && isChoseong(buffer[0]) && isJungseong(buffer[1]) && isJongseong(buffer[2])) {
             hangulString += combineKoreanCharacter(buffer);
             buffer = [];
-        }
-        else if (buffer.length === 2 && isChoseong(buffer[0]) && isJungseong(buffer[1])) {
-            buffer.push('');
-            hangulString += combineKoreanCharacter(buffer);
-            buffer = [];
-        }
-        else if (buffer.length === 3 && isJungseong(buffer[0]) && isJungseong(buffer[1]) && isChoseong(buffer[2])) {
-            hangulString += combineKoreanCharacter([buffer[0], buffer[1], '']);
-            buffer = [buffer[2]];
-        }
-        else if (buffer.length === 4 && isJungseong(buffer[0]) && isJungseong(buffer[1]) && isChoseong(buffer[2]) && isJongseong(buffer[3])) {
-            hangulString += combineKoreanCharacter([buffer[0], buffer[1], '']);
-            buffer = [buffer[2], buffer[3]];
         }
     });
 
@@ -67,7 +55,6 @@ export const handleKoreanWord = (characterArray: string[]) => {
         }
         hangulString += combineKoreanCharacter(buffer);
     }
-
-    // console.log("final", hangulString)
+    console.log("final", hangulString)
     return hangulString;
 }
