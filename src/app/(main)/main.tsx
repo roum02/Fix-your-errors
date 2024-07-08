@@ -4,12 +4,14 @@ import { useState } from "react";
 import { handleEnglishCharacterMatch, handleKoreanWord } from '../utils'
 
 export default function MainPage() {
-    const [englishText, setEnglishText] = useState('')
+    const [englishChar, setEnglishChar] = useState('')
+    const [koreanChar, setKoreanChar] = useState('')
 
     const handleSubmitButton = () => {
-        const koreanTextArray = handleEnglishCharacterMatch(englishText) as string[];
-        console.log(handleKoreanWord(koreanTextArray))
-        handleKoreanWord(koreanTextArray);
+        const koreanTextArray = handleEnglishCharacterMatch(englishChar) as string[];
+
+        let changedValue = handleKoreanWord(koreanTextArray);
+        setKoreanChar(changedValue)
     }
 
     return (
@@ -21,11 +23,11 @@ export default function MainPage() {
             <h1> Fix your Typing Error here! </h1>
             <p>origin</p>
             <textarea onChange={(e) => {
-                setEnglishText(e.target.value)
+                setEnglishChar(e.target.value)
             }} />
             <button onClick={handleSubmitButton}>submit</button>
             <p>fixed version</p>
-            <textarea/>
+            <textarea value={koreanChar} readOnly />
         </main>
     );
 }
