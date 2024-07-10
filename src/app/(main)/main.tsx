@@ -17,8 +17,8 @@ export default function MainPage() {
     return (
         <main>
             <menu>
-                <span>real-time</span>
-                <span>submit</span>
+                <a href={"/real-time"}>real-time</a>
+                <a href={"/"}>submit</a>
             </menu>
             <h1> Fix your Typing Error here! </h1>
             <p>origin</p>
