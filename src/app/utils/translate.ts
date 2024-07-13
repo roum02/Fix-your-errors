@@ -23,7 +23,7 @@ const combineKoreanCharacter = (characterArray: string[]) => {
     const jungseongIndex = JUNGSEONG.get(jungseong) as number;
     const jongseongIndex = JONGSEONG.get(jongseong) || 0;
 
-    console.log(choseong, jungseong, jongseong)
+    // console.log(choseong, jungseong, jongseong)
 
     const hangulChar =  String.fromCharCode(0xAC00 + (choseongIndex * 21 * 28) + (jungseongIndex * 28) + jongseongIndex)
     console.log("hangulChar", hangulChar)
