@@ -14,6 +14,11 @@ export default function MainPage() {
         setKoreanChar(changedValue)
     }
 
+    const handleReset = () => {
+        setEnglishChar('')
+        setKoreanChar('')
+    }
+
     return (
         <main>
             <menu>
@@ -24,8 +29,11 @@ export default function MainPage() {
             <p>origin</p>
             <textarea onChange={(e) => {
                 setEnglishChar(e.target.value)
-            }} />
+            }}
+            value={englishChar}
+            />
             <button onClick={handleSubmitButton}>submit</button>
+            <button onClick={handleReset}>reset</button>
             <p>fixed version</p>
             <textarea value={koreanChar} readOnly />
         </main>
