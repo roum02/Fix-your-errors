@@ -74,26 +74,31 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
     const isChoseong = (char: string) => CHOSEONG.has(char);
     const isJongseong = (char: string) => JONGSEONG.has(char);
 
-    const isEndOfWord = (char: string, nextChar: string | undefined): boolean => {
-        return (isChoseong(char) && nextChar && isJungseong(nextChar)) ||
-            (!isChoseong(char) && (!nextChar || !isJungseong(nextChar)));
+    /** to check the end of the word
+     * 1) after Jungseong
+     * 2) after Jongseong
+     * */
+    const isEndOfWord = (currentChar: string, nextChar: string | undefined): boolean => {
+        return ((isJungseong(currentChar) && nextChar && isChoseong(nextChar)) ||
+            (isJongseong(currentChar) && nextChar && isChoseong(nextChar))) || false;
     };
 
+    console.log("1. koreanCharacterArray: ", koreanCharacterArray)
 
     words = koreanCharacterArray.reduce((acc: string[], char, i, array) => {
         const nextChar = array[i + 1];
-        if (i === array.length - 1) {
-            acc.push(array.slice(start).join(''));
-        } else if (isEndOfWord(char, nextChar)) {
-            acc.push(array.slice(start, i).join(''));
-            start = i;
+        if (i === array.length - 1 || isEndOfWord(char, nextChar)) {
+            acc.push(array.slice(start, i + 1).join(''));
+            start = i + 1;
         }
         return acc;
     }, []);
 
+    console.log("3. words :", words)
 
     const processWord = (word: string): string => {
         let wordArray = word.split('');
+        //console.log("wordArray: ", wordArray)
 
         const processJungseong = (arr: string[], startIndex: number): void => {
             if (isJungseong(arr[startIndex]) && isJungseong(arr[startIndex + 1])) {
@@ -117,9 +122,10 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
 
         if (wordArray.length > 2 && isChoseong(wordArray[0]) && isJungseong(wordArray[1])) {
             processJungseong(wordArray, 1);
-            if (wordArray.length >= 4) {
-                processJongseong(wordArray, 2);
-            }
+        }
+
+        if (wordArray.length >= 4 && isJongseong(wordArray[2]) && isJongseong(wordArray[3])) {
+            processJongseong(wordArray, 2);
         }
 
         return wordArray.join('');
@@ -127,5 +133,8 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
 
     words = words.map(processWord);
 
-    return '';
+    console.log("after processWord", words)
+    console.log("combine: ", combineKoreanCharacter(words))
+
+    return combineKoreanCharacter(words)
 }
