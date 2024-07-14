@@ -1,4 +1,5 @@
 import { CHOSEONG, JONGSEONG, JUNGSEONG, KOREAN_DICTIONARY} from '../data/dictionary'
+import {element} from "prop-types";
 
 /** TODO this file should be moved */
 const jongseongMap: { [key: string]: string } = {
@@ -53,7 +54,7 @@ export const handleEnglishCharacterMatch = (englishText: string) => {
 }
 
 /** change split character to korean  */
-const combineKoreanCharacter = (characterArray: string[]) => {
+const combineKoreanCharacter = (characterArray: string[]): string => {
     const [choseong, jungseong, jongseong] = characterArray;
 
     const choseongIndex = CHOSEONG.get(choseong) as number;
@@ -89,10 +90,6 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
         if (isChoseong(currentChar) && (!nextChar || isChoseong(nextChar))) {
             return true;
         }
-        // 종성 + 중성
-        // if (isJongseong(currentChar) && nextChar && isJungseong(nextChar)) {
-        //     return true;
-        // }
         // 초성 + 중성 + 종성
         if (prevChar && isChoseong(prevChar) && isJungseong(currentChar) && nextChar && (isChoseong(nextChar) || isJongseong(nextChar))) {
             return true;
@@ -100,29 +97,25 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
         return false;
     };
 
-    console.log("1. koreanCharacterArray: ", koreanCharacterArray)
-
     words = koreanCharacterArray.reduce((acc: string[], char, i, array) => {
         const nextChar = array[i + 1];
         const prevChar = array[i - 1];
+
+        // 현재 문자와 다음 문자를 기준으로 음절 경계를 판단하여 음절을 분리
         if (i === array.length - 1 || isEndOfWord(char, nextChar, prevChar)) {
             acc.push(array.slice(start, i + 1).join(''));
             start = i + 1;
         }
-        /** 자음 하나로 묶기 */
-        // string 길이가 1이면서 자음인 경우 앞이랑 합치기
-        console.log("반복문: ",isEndOfWord(char, nextChar, prevChar), char, acc)
-        if (acc.length > 0 && acc[acc.length - 1].length === 1 && isChoseong(acc[acc.length - 1]) && acc.length > 1) {
-            let originString = acc[acc.length - 2];
-            originString += acc[acc.length - 1];
-            acc.splice(acc.length - 2, 2);
-            acc.push(originString);
+
+        // 자음 하나로 묶기: 단일 자음이 있는 경우 이전 음절과 합침
+        const lastWord = acc[acc.length - 1];
+        if (lastWord && lastWord.length === 1 && isChoseong(lastWord) && acc.length > 1) {
+            const mergedWord = acc[acc.length - 2] + lastWord;
+            acc.splice(acc.length - 2, 2, mergedWord);
         }
 
         return acc;
     }, []);
-
-    console.log("3. words :", words)
 
     /** convert dubble letter */
     const processWord = (word: string): string => {
@@ -143,7 +136,6 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
         const processJongseong = (arr: string[], startIndex: number): void => {
             if (isJongseong(arr[startIndex]) && isJongseong(arr[startIndex + 1])) {
                 let original = arr[startIndex];
-                console.log("original:", original)
                 arr[startIndex] = makeJongseongList(arr.slice(startIndex, startIndex + 2));
                 if (original !== arr[startIndex]) {
                     arr.splice(startIndex + 1, 1);
@@ -165,9 +157,11 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
     words = words.map(processWord);
 
     console.log("4. after processWord", words)
+    // combineKoreanCharacter 함수를 사용하여 변환된 한글 음절 배열 생성
+    const combinedWords: string = words.map(item => {
+        const temp = combineKoreanCharacter(item.split(''));
+        return temp;
+    }).join('')
 
-
-    console.log("combine: ", combineKoreanCharacter(words))
-
-    return combineKoreanCharacter(words)
+    return combinedWords;
 }
