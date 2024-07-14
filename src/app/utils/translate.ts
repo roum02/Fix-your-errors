@@ -74,32 +74,61 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
     const isChoseong = (char: string) => CHOSEONG.has(char);
     const isJongseong = (char: string) => JONGSEONG.has(char);
 
-    /** to check the end of the word
-     * 1) after Jungseong
-     * 2) after Jongseong
-     * */
-    const isEndOfWord = (currentChar: string, nextChar: string | undefined): boolean => {
-        return ((isJungseong(currentChar) && nextChar && isChoseong(nextChar)) ||
-            (isJongseong(currentChar) && nextChar && isChoseong(nextChar))) || false;
+    /** to check the end of the word */
+    const isEndOfWord = (currentChar: string, nextChar: string | undefined, prevChar: string | undefined): boolean => {
+
+        // 중성 + 초성
+        if (isJungseong(currentChar) && nextChar && isChoseong(nextChar)) {
+            return true;
+        }
+        // 종성 + 초성
+        if (isJongseong(currentChar) && nextChar && isChoseong(nextChar)) {
+            return true;
+        }
+        // 초성 + 초성 or 초성 + undefined
+        if (isChoseong(currentChar) && (!nextChar || isChoseong(nextChar))) {
+            return true;
+        }
+        // 종성 + 중성
+        // if (isJongseong(currentChar) && nextChar && isJungseong(nextChar)) {
+        //     return true;
+        // }
+        // 초성 + 중성 + 종성
+        if (prevChar && isChoseong(prevChar) && isJungseong(currentChar) && nextChar && (isChoseong(nextChar) || isJongseong(nextChar))) {
+            return true;
+        }
+        return false;
     };
 
     console.log("1. koreanCharacterArray: ", koreanCharacterArray)
 
     words = koreanCharacterArray.reduce((acc: string[], char, i, array) => {
         const nextChar = array[i + 1];
-        if (i === array.length - 1 || isEndOfWord(char, nextChar)) {
+        const prevChar = array[i - 1];
+        if (i === array.length - 1 || isEndOfWord(char, nextChar, prevChar)) {
             acc.push(array.slice(start, i + 1).join(''));
             start = i + 1;
         }
+        /** 자음 하나로 묶기 */
+        // string 길이가 1이면서 자음인 경우 앞이랑 합치기
+        console.log("반복문: ",isEndOfWord(char, nextChar, prevChar), char, acc)
+        if (acc.length > 0 && acc[acc.length - 1].length === 1 && isChoseong(acc[acc.length - 1]) && acc.length > 1) {
+            let originString = acc[acc.length - 2];
+            originString += acc[acc.length - 1];
+            acc.splice(acc.length - 2, 2);
+            acc.push(originString);
+        }
+
         return acc;
     }, []);
 
     console.log("3. words :", words)
 
+    /** convert dubble letter */
     const processWord = (word: string): string => {
         let wordArray = word.split('');
-        //console.log("wordArray: ", wordArray)
 
+        /** 이중모음 */
         const processJungseong = (arr: string[], startIndex: number): void => {
             if (isJungseong(arr[startIndex]) && isJungseong(arr[startIndex + 1])) {
                 let original = arr[startIndex];
@@ -110,9 +139,11 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
             }
         };
 
+        /** 이중자음 */
         const processJongseong = (arr: string[], startIndex: number): void => {
             if (isJongseong(arr[startIndex]) && isJongseong(arr[startIndex + 1])) {
                 let original = arr[startIndex];
+                console.log("original:", original)
                 arr[startIndex] = makeJongseongList(arr.slice(startIndex, startIndex + 2));
                 if (original !== arr[startIndex]) {
                     arr.splice(startIndex + 1, 1);
@@ -133,7 +164,9 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
 
     words = words.map(processWord);
 
-    console.log("after processWord", words)
+    console.log("4. after processWord", words)
+
+
     console.log("combine: ", combineKoreanCharacter(words))
 
     return combineKoreanCharacter(words)
