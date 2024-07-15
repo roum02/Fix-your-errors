@@ -1,40 +1,13 @@
-import { CHOSEONG, JONGSEONG, JUNGSEONG, KOREAN_DICTIONARY} from '../data/dictionary'
-import {element} from "prop-types";
-
-/** TODO this file should be moved */
-const jongseongMap: { [key: string]: string } = {
-    'ㄱㄱ': 'ㄲ',
-    'ㄱㅅ': 'ㄳ',
-    'ㄴㅈ': 'ㄵ',
-    'ㄴㅎ': 'ㄶ',
-    'ㄹㄱ': 'ㄺ',
-    'ㄹㅁ': 'ㄻ',
-    'ㄹㅂ': 'ㄼ',
-    'ㄹㅅ': 'ㄽ',
-    'ㄹㅌ': 'ㄾ',
-    'ㄹㅍ': 'ㄿ',
-    'ㄹㅎ': 'ㅀ',
-    'ㅂㅅ': 'ㅄ'
-};
-
-const jungseongMap: { [key: string]: string } = {
-    'ㅗㅏ': 'ㅘ',
-    'ㅗㅐ': 'ㅙ',
-    'ㅗㅣ': 'ㅚ',
-    'ㅜㅓ': 'ㅝ',
-    'ㅜㅔ': 'ㅞ',
-    'ㅜㅣ': 'ㅟ',
-    'ㅡㅣ': 'ㅢ'
-};
+import {CHOSEONG, JONGSEONG, jongseongObj, JUNGSEONG, jungseongObj, KOREAN_DICTIONARY} from '../data/dictionary'
 
 const makeJongseongList = ( charList: string[]): string => {
     const key = charList.join('');
-    return jongseongMap[key] || charList[0];
+    return jongseongObj[key] || charList[0];
 }
 
 const makeJungseongList = (charList: string[]): string => {
     const key = charList.join('');
-    return jungseongMap[key] || charList[0];
+    return jungseongObj[key] || charList[0];
 }
 
 
