@@ -67,7 +67,6 @@ const combineKoreanCharacter = (characterArray: string[]): string => {
 
 /** combine a korean character to make a korean word */
 export const handleKoreanWord = (koreanCharacterArray: string[]) => {
-    let hangulString = '';
     let words: string[] = [];
     let start = 0;
 
@@ -75,7 +74,7 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
     const isChoseong = (char: string) => CHOSEONG.has(char);
     const isJongseong = (char: string) => JONGSEONG.has(char);
 
-    /** to check the end of the word */
+    /** Check if the current character is the end of a word */
     const isEndOfWord = (currentChar: string, nextChar: string | undefined, prevChar: string | undefined): boolean => {
 
         // 중성 + 초성
@@ -97,7 +96,33 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
         return false;
     };
 
-    words = koreanCharacterArray.reduce((acc: string[], char, i, array) => {
+    /** convert dubble letter */
+    const processWord = (word: string): string => {
+        const wordArray = word.split('');
+
+        const processDoubleLetter = (arr: string[], startIndex: number, isDoubleFunc: (char: string) => boolean, makeListFunc: (subArr: string[]) => string): void => {
+            if (isDoubleFunc(arr[startIndex]) && isDoubleFunc(arr[startIndex + 1])) {
+                const original = arr[startIndex];
+                arr[startIndex] = makeListFunc(arr.slice(startIndex, startIndex + 2));
+                if (original !== arr[startIndex]) {
+                    arr.splice(startIndex + 1, 1);
+                }
+            }
+        };
+
+        if (wordArray.length > 2 && isChoseong(wordArray[0]) && isJungseong(wordArray[1])) {
+            processDoubleLetter(wordArray, 1,isJungseong, makeJungseongList);
+        }
+
+        if (wordArray.length >= 4 && isJongseong(wordArray[2]) && isJongseong(wordArray[3])) {
+            processDoubleLetter(wordArray, 2, isJongseong, makeJongseongList);
+        }
+
+        return wordArray.join('');
+    };
+
+    /** split korean characters into syllables */
+    koreanCharacterArray.reduce((acc: string[], char, i, array) => {
         const nextChar = array[i + 1];
         const prevChar = array[i - 1];
 
@@ -115,53 +140,12 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
         }
 
         return acc;
-    }, []);
+    }, words);
 
-    /** convert dubble letter */
-    const processWord = (word: string): string => {
-        let wordArray = word.split('');
+    const processedWords = words.map(processWord);
 
-        /** 이중모음 */
-        const processJungseong = (arr: string[], startIndex: number): void => {
-            if (isJungseong(arr[startIndex]) && isJungseong(arr[startIndex + 1])) {
-                let original = arr[startIndex];
-                arr[startIndex] = makeJungseongList(arr.slice(startIndex, startIndex + 2));
-                if (original !== arr[startIndex]) {
-                    arr.splice(startIndex + 1, 1);
-                }
-            }
-        };
-
-        /** 이중자음 */
-        const processJongseong = (arr: string[], startIndex: number): void => {
-            if (isJongseong(arr[startIndex]) && isJongseong(arr[startIndex + 1])) {
-                let original = arr[startIndex];
-                arr[startIndex] = makeJongseongList(arr.slice(startIndex, startIndex + 2));
-                if (original !== arr[startIndex]) {
-                    arr.splice(startIndex + 1, 1);
-                }
-            }
-        };
-
-        if (wordArray.length > 2 && isChoseong(wordArray[0]) && isJungseong(wordArray[1])) {
-            processJungseong(wordArray, 1);
-        }
-
-        if (wordArray.length >= 4 && isJongseong(wordArray[2]) && isJongseong(wordArray[3])) {
-            processJongseong(wordArray, 2);
-        }
-
-        return wordArray.join('');
-    };
-
-    words = words.map(processWord);
-
-    console.log("4. after processWord", words)
     // combineKoreanCharacter 함수를 사용하여 변환된 한글 음절 배열 생성
-    const combinedWords: string = words.map(item => {
-        const temp = combineKoreanCharacter(item.split(''));
-        return temp;
-    }).join('')
+    const combinedWords: string = processedWords.map(item => combineKoreanCharacter(item.split(''))).join('')
 
     return combinedWords;
 }
