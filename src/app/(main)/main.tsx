@@ -21,10 +21,6 @@ export default function MainPage() {
 
     return (
         <main>
-            <menu>
-                <a href={"/real-time"}>real-time</a>
-                <a href={"/"}>submit</a>
-            </menu>
             <h1> Fix your Typing Error here! </h1>
             <p>origin</p>
             <textarea onChange={(e) => {
