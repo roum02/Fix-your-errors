@@ -1,4 +1,4 @@
-### Fix Your Typing Mistake: English to Korean
+## Fix Your Typing Mistake: English to Korean
 
 Have you ever experienced typing in korean using an English keyboard layout?
 What if you do not recognize this mistakes until you have finished typing? 
