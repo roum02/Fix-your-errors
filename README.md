@@ -1,5 +1,7 @@
 ## Fix Your Typing Mistake: English to Korean
 
+<a href="https://velog.io/@roum02/%EC%98%81%ED%83%80-%ED%95%9C%EA%B5%AD%EC%96%B4-%EB%B3%80%ED%99%98%EA%B8%B0-%EC%A0%9C%EC%9E%91%EA%B8%B01">you could see my blog here.</a>
+
 Have you ever experienced typing in korean using an English keyboard layout?
 What if you do not recognize this mistakes until you have finished typing? 
 
@@ -173,4 +175,4 @@ const combineKoreanCharacter = (characterArray: string[]): string => {
 ![](https://velog.velcdn.com/images/roum02/post/9262151d-e9a3-45f2-bec8-9137e9bffe20/image.gif)
 
 
-<a href="https://velog.io/@roum02/%EC%98%81%ED%83%80-%ED%95%9C%EA%B5%AD%EC%96%B4-%EB%B3%80%ED%99%98%EA%B8%B0-%EC%A0%9C%EC%9E%91%EA%B8%B01">you could see my blog here.</a>
+ 
