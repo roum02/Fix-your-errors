@@ -7,7 +7,7 @@ What if you do not recognize this mistakes until you have finished typing?
 
 This tool would be really helpful for you in such cases!
 
-![img.png](img.png)
+![img.png](src/img/result_img.png)
 
 [//]: # (### How to use it?)
 
@@ -172,7 +172,5 @@ const combineKoreanCharacter = (characterArray: string[]): string => {
 
 
 ### done!
-![](https://velog.velcdn.com/images/roum02/post/9262151d-e9a3-45f2-bec8-9137e9bffe20/image.gif)
-
-
+![result_img.gif](src/img/result_gif.gif)
  
