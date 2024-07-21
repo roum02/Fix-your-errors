@@ -1,9 +1,12 @@
-### before start
+<details>
+<summary>before reading</summary>
 you could see my website here
 <br/>
 https://fix-your-errors.vercel.app/
 <br/>
 <a href="https://velog.io/@roum02/%EC%98%81%ED%83%80-%ED%95%9C%EA%B5%AD%EC%96%B4-%EB%B3%80%ED%99%98%EA%B8%B0-%EC%A0%9C%EC%9E%91%EA%B8%B01">you could see my blog here.</a>
+
+</details>
 
 ## Fix Your Typing Mistake: English to Korean
 
