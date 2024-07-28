@@ -1,11 +1,13 @@
 import styles from "./page.module.css";
-import MainPage from '../app/(main)/main'
+import MainPage from './(main)/page'
+import OfflinePage from "./offline/page";
 
 export default function Home() {
 
   return (
  <main>
-    <MainPage/>
+     <MainPage/>
+     <OfflinePage/>
  </main>
   );
 }
