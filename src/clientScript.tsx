@@ -7,6 +7,11 @@ export default function ClientScript() {
     useEffect(() => {
         const el = document.createElement('pwa-update');
         document.body.appendChild(el);
+
+        // Cleanup function to remove the element when the component unmounts
+        return () => {
+            document.body.removeChild(el);
+        };
     }, []);
 
     return (
