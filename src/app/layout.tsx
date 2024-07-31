@@ -17,7 +17,6 @@ export default function RootLayout({
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="manifest" href="/manifest.json" />
       <title>en2han</title>
-      <ClientScript />
       {/*<Script*/}
       {/*    strategy="afterInteractive"*/}
       {/*    type="module"*/}
@@ -27,6 +26,7 @@ export default function RootLayout({
       {/*      document.body.appendChild(el);*/}
       {/*    }}*/}
       {/*/>*/}
+      <ClientScript />
     </head>
       <body className={inter.className}>{children}</body>
     </html>

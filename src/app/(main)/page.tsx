@@ -20,7 +20,7 @@ export default function MainPage() {
     }
 
     return (
-        <main>
+        <div>
             <h1> Fix your Typing Error here! </h1>
             <p>origin</p>
             <textarea onChange={(e) => {
@@ -32,6 +32,6 @@ export default function MainPage() {
             <button onClick={handleReset}>reset</button>
             <p>fixed version</p>
             <textarea value={koreanChar} readOnly />
-        </main>
+        </div>
     );
 }
