@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import ClientScript from "@/clientScript";
+import ClientScript from "@/app/clientScript";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,6 +9,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
     <head>
