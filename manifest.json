@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "eg2han",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "eg2han",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "description": "Fix Your Typing Mistake: English to Korean",
+  "lang": "ko"
+}
