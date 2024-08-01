@@ -6,8 +6,9 @@
   "orientation": "any",
   "scope": "/",
   "short_name": "eg2han",
-  "start_url": "/",
+  "start_url": "https://eg2han.xyz/",
   "theme_color": "#ffffff",
   "description": "Fix Your Typing Mistake: English to Korean",
-  "lang": "ko"
+  "id": "eg2han",
+  "lang": "en"
 }
