@@ -10,5 +10,13 @@
   "theme_color": "#ffffff",
   "description": "Fix Your Typing Mistake: English to Korean",
   "id": "eg2han",
-  "lang": "en"
+  "lang": "en",
+  "icons": [
+    {
+      "src": "https://eg2han.xyz/images/512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
