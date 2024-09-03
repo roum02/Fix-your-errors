@@ -26,8 +26,24 @@ export const handleEnglishCharacterMatch = (englishText: string) => {
     return koreanTextArray;
 }
 
+/** Except special characters */
+const isSpecialCharacter = (char: string): boolean => {
+    const code = char.charCodeAt(0);
+    return (
+        (code >= 33 && code <= 47) || // !"#$%&'()*+,-./
+        (code >= 58 && code <= 64) || // :;<=>?@
+        (code >= 91 && code <= 96) || // [\]^_`
+        (code >= 123 && code <= 126)  // {|}~
+    );
+};
+
 /** change split character to korean  */
 const combineKoreanCharacter = (characterArray: string[]): string => {
+    /** Except special characters */
+    if (characterArray.some(isSpecialCharacter)) {
+        return characterArray.find(isSpecialCharacter)!;
+    }
+
     const [choseong, jungseong, jongseong] = characterArray;
 
     const choseongIndex = CHOSEONG.get(choseong) as number;
@@ -94,10 +110,16 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
         return wordArray.join('');
     };
 
+
     /** split korean characters into syllables */
     koreanCharacterArray.reduce((acc: string[], char, i, array) => {
         const nextChar = array[i + 1];
         const prevChar = array[i - 1];
+
+        if(isSpecialCharacter(char)){
+            acc.push(char)
+            start = i + 1;
+        }
 
         // 현재 문자와 다음 문자를 기준으로 음절 경계를 판단하여 음절을 분리
         if (i === array.length - 1 || isEndOfWord(char, nextChar, prevChar)) {
