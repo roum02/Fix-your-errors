@@ -79,7 +79,12 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
             return true;
         }
         // (초성 + 중성) + 종성
-        if(prevChar && isJungseong(prevChar) && isJongseong(currentChar)){
+        if(prevChar && isJungseong(prevChar) && isJongseong(currentChar) && !isChoseong(currentChar, nextChar)){
+            return true
+        }
+        // 중성 + 끝(특수문자)
+        // TODO 특수문자가 들어가는 더 많은 케이스 분석 필요
+        if(isJungseong(currentChar) && (nextChar && !isKoreanConsonantOrVowel(nextChar))){
             return true
         }
         return false;
