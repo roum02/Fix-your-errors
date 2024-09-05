@@ -26,22 +26,20 @@ export const handleEnglishCharacterMatch = (englishText: string) => {
     return koreanTextArray;
 }
 
-/** Except special characters */
-const isSpecialCharacter = (char: string): boolean => {
+/** Check if the character is a Korean consonant or vowel */
+const isKoreanConsonantOrVowel = (char: string): boolean => {
     const code = char.charCodeAt(0);
-    return (
-        (code >= 33 && code <= 47) || // !"#$%&'()*+,-./
-        (code >= 58 && code <= 64) || // :;<=>?@
-        (code >= 91 && code <= 96) || // [\]^_`
-        (code >= 123 && code <= 126)  // {|}~
-    );
+    const isConsonant = (code >= 12593 && code <= 12622);
+    const isVowel = (code >= 12623 && code <= 12643);
+
+    return isConsonant || isVowel;
 };
 
 /** change split character to korean  */
 const combineKoreanCharacter = (characterArray: string[]): string => {
     /** Except special characters */
-    if (characterArray.some(isSpecialCharacter)) {
-        return characterArray.find(isSpecialCharacter)!;
+    if (characterArray.some(char => !isKoreanConsonantOrVowel(char))) {
+        return characterArray.find(char => !isKoreanConsonantOrVowel(char))!;
     }
 
     const [choseong, jungseong, jongseong] = characterArray;
@@ -60,27 +58,29 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
     let start = 0;
 
     const isJungseong = (char: string) => JUNGSEONG.has(char);
-    const isChoseong = (char: string) => CHOSEONG.has(char);
+    const isChoseong = (char: string, nextChar?: string) => {
+        return CHOSEONG.has(char) && nextChar && isJungseong(nextChar)
+    };
     const isJongseong = (char: string) => JONGSEONG.has(char);
 
     /** Check if the current character is the end of a word */
-    const isEndOfWord = (currentChar: string, nextChar: string | undefined, prevChar: string | undefined): boolean => {
+    const isEndOfWord = (currentChar: string, nextChar: string | undefined, afterNextChar: string | undefined, prevChar: string | undefined): boolean => {
 
         // 중성 + 초성
-        if (isJungseong(currentChar) && nextChar && isChoseong(nextChar)) {
+        if (isJungseong(currentChar) && nextChar && isChoseong(nextChar, afterNextChar)) {
             return true;
         }
         // 종성 + 초성
-        if (isJongseong(currentChar) && nextChar && isChoseong(nextChar)) {
+        if (isJongseong(currentChar) && nextChar && isChoseong(nextChar, afterNextChar)) {
             return true;
         }
         // 초성 + 초성 or 초성 + undefined
-        if (isChoseong(currentChar) && (!nextChar || isChoseong(nextChar))) {
+        if (isChoseong(currentChar, nextChar) && (!nextChar || isChoseong(nextChar, afterNextChar))) {
             return true;
         }
-        // 초성 + 중성 + 종성
-        if (prevChar && isChoseong(prevChar) && isJungseong(currentChar) && nextChar && (isChoseong(nextChar) || isJongseong(nextChar))) {
-            return true;
+        // (초성 + 중성) + 종성
+        if(prevChar && isJungseong(prevChar) && isJongseong(currentChar)){
+            return true
         }
         return false;
     };
@@ -114,15 +114,17 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
     /** split korean characters into syllables */
     koreanCharacterArray.reduce((acc: string[], char, i, array) => {
         const nextChar = array[i + 1];
+        const afterNextChar = array[i + 2]
         const prevChar = array[i - 1];
 
-        if(isSpecialCharacter(char)){
+        // 특수문자인 경우 그냥 넣어주기
+        if(!isKoreanConsonantOrVowel(char)){
             acc.push(char)
             start = i + 1;
         }
 
         // 현재 문자와 다음 문자를 기준으로 음절 경계를 판단하여 음절을 분리
-        if (i === array.length - 1 || isEndOfWord(char, nextChar, prevChar)) {
+        if (i === array.length - 1 || isEndOfWord(char, nextChar, afterNextChar, prevChar)) {
             acc.push(array.slice(start, i + 1).join(''));
             start = i + 1;
         }
