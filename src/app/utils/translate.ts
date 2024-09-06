@@ -104,7 +104,7 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
             }
         };
 
-        if (wordArray.length > 2 && isChoseong(wordArray[0]) && isJungseong(wordArray[1])) {
+        if (wordArray.length > 2 && isChoseong(wordArray[0], wordArray[1])) {
             processDoubleLetter(wordArray, 1,isJungseong, makeJungseongList);
         }
 
@@ -135,6 +135,7 @@ export const handleKoreanWord = (koreanCharacterArray: string[]) => {
         }
 
         // 자음 하나로 묶기: 단일 자음이 있는 경우 이전 음절과 합침
+        // TODO isChoseong is needed to be test
         const lastWord = acc[acc.length - 1];
         if (lastWord && lastWord.length === 1 && isChoseong(lastWord) && acc.length > 1) {
             const mergedWord = acc[acc.length - 2] + lastWord;
